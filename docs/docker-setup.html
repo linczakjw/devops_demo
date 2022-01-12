@@ -1,0 +1,84 @@
+---
+layout: default
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DevOps Demonstrations - Docker Setup</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+
+    <h1>Docker Setup</h1>
+      <p>There are plenty of tutorials on setting up and learning Docker and containers.
+         One thing that keeps coming up: what is a container and how does it differ from a VM? Well,
+         <a href="https://youtu.be/8fi7uSYlOdc">this video</a> linked directly in Docker's docs was
+         really enlightening to me, especially if you have a general understanding of UNIX/Linux systems.
+         In essence, if you can narrow down the environment that you need to maintain for your application
+         to only the absolute bare needs of the OS and any packages or frameworks and nothing else, and
+         have it so that the container can still share the resources of a physical machine and its OS without
+         being able to talk to anything else that may be running on the machine, then containers are
+         exactly what you need.</p>
+      <p>A side note: I've never read or even know if any docs on this level of detail exist, but I would
+         imagine that Apple is essentially using containerization for all of their apps on iOS devices.
+         This allows for the app to not have access to other containers ("apps") running on the device unless
+         explicitly allowed in the default setup of system OS tie-ins, etc, and if you were able to somehow
+         escape to a shell within the app, the root wouldn't be the root to the underlying OS, but a frameworks
+         root only for your container app, keeping things secure.  OK, ending digression.</p>
+
+      <h2>How We're Going to Start</h2>
+        <p>Basically, without getting into too much of the philosophy of things right now, we'll Start
+           by shortcutting our application and downloading an existing docker image that has been setup as
+           a microservice for processing images, so the first thing is to get Docker desktop and then
+           grab the docker image for this microservice and run it.
+        </p>
+
+      <h2>Download and install Docker</h2>
+        <p>I'm on a 10-year old iMac where I can't go any higher than Catalina for the OS install (fun!).
+           And while things are a little slow, everything still works.  All of my examples will be on the
+           Mac, but you can do this on Windows as well.</p>
+        
+        <ul>
+           <li>Download Docker: <a href="https://www.docker.com/products/docker-desktop">https://www.docker.com/products/docker-desktop</a></li>
+           <li>Install Docker by following the prompts in the installer</li>
+           <li>Helpful: sign up for a Docker Hub account - and for crying out loud, use MFA and store your creds in 1Password or something similar!</li>
+        </ul>
+
+        <p>That's it for now!  But...</p>
+
+      <h2>A small (maybe) diversion on security and development workflows</h2>
+        <p>I haven't done a ton of research on this from a security perspective.  What's great about containers (and VMs like those spun up from Vagrant)
+           is that at least by default they are exposed only to the host machine.  But of course the assumption is that the host machine you are working
+           on is secure, and that's likely a poor assumption.  Here are some things I would consider in a setup, and I would be curious what other people think about this, especially
+           if you are in a place where you work on code for multiple clients:</p>
+
+        <ol>
+          <li>Rather than running all of your containers and developing right off of your user account on your Mac's OS, setup a separate
+              virtual machine running on your Mac (or, frankly, get another machine for development purposes only) and use that for all development (perhaps one VM per client if that's your workflow).
+              The VM could be created and managed in this way:
+              <ol>
+                <li>Install Vagrant on your Mac and setup vagrantfile configs for each of the VMs/boxes you want to run for development when you need them</li>
+                <li>Install Ansible or a similar tool on your Mac so that you can use it with Vagrant to script and spec the VMs you would like with all
+                  the necessary tools and software packages you would like to have.
+                </li>
+                <li>Remove the default settings of sharing vagrant fileshares between your Mac and your VMs if they aren't needed</li>
+                <li>Lock down networking on the VM/boxes.  By default, Vagrant creates a default vagrant account for SSH access to your box, but the default password is 'vagrant', and the SSH key is insecure.
+                  So would likely the root account.  You can fix this in a variety of ways and re-save as your new default private box.</li>
+                <li>Keep your vagrantfile configs and Ansible configs in source control (per client if need be) so you can rebuild them at any time</li>
+                <li>More extreme: if you have a router that you can configure with multiple VLANs, set up one for each client's VMs you are working on and
+                  make it so that you can only get to that VLAN via VPN setup.  Then make sure in your vagrant box that they are assigned the VLAN IDs you
+                  created, so at the least (if you want) multiple VMs/boxes on that VLAN can talk to each other in whatever way you wish, but nothing else.
+                </li>
+                <li>With a VM ready for use for development, you can setup containers on those VMs, your software, whatever you wish.</li>
+              </ol>
+          </li>
+        </ol>
+
+        <p>I've not setup anything yet from the above, but with some quick work you can probably make that happen.  I could see integrating, say,
+           with 1Password's Secrets Automation if you or your company or team use 1Password so that the default passwords for the accounts setup
+           with Vagrant can be available only to the team or teams that needs them.
+        </p>
+
+  </body>
+</html>
