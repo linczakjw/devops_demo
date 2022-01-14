@@ -34,12 +34,61 @@ layout: default
           docker run -p 9000:9000 h2non/imaginary
         </code>
 
-      <p>If you don't add the <code>-p 9000:9000</code>, the port in the container will be open to listening, but your OS will not Open
+      <p>If you don't add the <code>-p 9000:9000</code>, the port in the container will be open to listening, but your OS will not open
          port 9000 to send traffic to the listening port on the container. Running the <code>docker run</code> command will leave an open
          process in your terminal - just keep it like that for now, then open up a browser and head to <a href="http://localhost:9000/form">http://localhost:9000/form</a>.
          The form should appear and look like this:</p>
 
       <img src="images/default_form.png" alt="Default imaginary form for testing services">
+
+      <p>We're interested in the section for Convert Format.  Go ahead and grab any GIF or JPEG file (preferably small) and use the form
+         to upload the image.  Then hit Upload.  If everything worked, you'll instantly see a page with a URL of
+         <a href="http://localhost:9000/convert?type=png">http://localhost:9000/convert?type=png</a> and your image displayed in PNG format.  You
+         can drag the file over to your Desktop and check it out for yourself (it should be named convert.png).  Nice!
+      </p>
+
+      <h2>How do we prep for a front-end?</h2>
+
+        <p>OK, but I want to prepare for being able to call the REST service via URL in a Spring Boot app that I'll be setting up. I can at
+          least get a general idea of how this will work by calling the service by URL with the parameters needed.  How could we do this? Well,
+          there's the "let's get this tested" way, and then there's thinking about how this will work in production.  First, the actual REST API call.
+        </p>
+
+        <p>The documentation for the convert functionality is here: <a href="https://github.com/h2non/imaginary#get--post-convert">https://github.com/h2non/imaginary#get--post-convert</a></p>
+
+        <p>In this case, we're really focused on using the <code>type=png</code> parameter.  But how about how to get the image to convert?</p>
+        
+        <p>Well, I think this depends on what you're doing.  Here, we're just going to ask for an image, and spit out a conversion.  We're not
+           expecting to store the files long-term, but if you are building something where you are doing this as either
+           an image conversion service (let's hope not), or you are doing this because you are working with images and need to convert them and store
+           them for a service tied to a user's account (either something more elaborate or as simple as converting an image for an avatar), then
+           dealing with a storage area is important.  Something like an S3 bucket (locked down!) and mounted as a network volume on the container
+           would be a good start, or it may work better to keep them as binary objects in your relational database.
+        </p>
+
+        <p>In our case, we want something very temporary for testing.  So, I'll setup a folder on my OS where I can then mount it as a volume
+           in the docker container, tell imaginary to mount that directory for use, then I'll just add a file or two in that mounted folder on my
+           OS and then run the convert REST API call to convert it the image in there.  First, let's create a docker volume.  I'll create a folder
+           in my devops_demo project folder called <code>uploads</code> and then mount the volume on the imaginary container like this:
+        </p>
+
+        <code>docker run -v ~/dev/devops_demo/uploads:/mnt/uploads -p 9000:9000 h2non/imaginary -mount /mnt/uploads</code>
+
+        <p>I'm not going to go into crazy detail here, but you can always run an exec on the container now, go to <code>/mnt/uploads</code>,
+           then in your OS in a separate terminal copy a GIF of JPEG file into your directory (in my case it's in ~/dev/devops_demo/uploads)
+           and then go back into your exec terminal and do an <code>ls</code> and confirm that the file you copied in is indeed there.
+        </p>
+
+        <p>Once you do (I added a file called <code>0.jpeg</code>), let's run a curl command in your terminal on your OS to simulate a REST
+           API call and see what happens:</p>
+
+        <code>curl --output ~/dev/devops_demo/uploads/convert.png -O http://localhost:9000/convert?type=png&file=0.jpeg</code>
+
+        <p>And out pops a convert.png file in your uploads folder on your OS.  Don't believe me that it's a PNG?  Just open the file in Preview
+           and launch the inspector and confirm that the Document Type is indeed a PNG image.  Excellent!   Now, this gets us a file, but for
+           the actual application, the output would just be piped to the browser as is without saving.  It would certainly be up to you in your
+           Spring Boot app to save the output to a storage location (S3 bucket or binary blob in a DB)
+        </p>
       
   </body>
 </html>
