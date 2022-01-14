@@ -1,0 +1,45 @@
+---
+layout: default
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Image Processing Docker container</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+
+    <h1>Image Processing Docker container</h1>
+      <p>OK, I picked image processing as an example solely because it was something that most likely you may do a tiny bit
+         of (uploading and changing an avatar, for example) but generally don't want to spin your wheels building something
+         on your own when you have a ton of other things to do.  So, I'm pulling from a docker image someone already
+         created that handles image processing: h2non's imaginary Docker image and microservice.  You can find documentation
+         here on getting the Docker image: <a href="https://github.com/h2non/imaginary#docker">https://github.com/h2non/imaginary#docker</a>.
+      </p>
+
+      <p>Yes, this container is utterly overkill for what we need, but it's simple and fast, and this is a throw-away project anyway, right?</p>
+
+      <p>Open your terminal and run this command:</p>
+        <code>
+          docker pull h2non/imaginary
+        </code>
+
+      <p>Before we start the container, we're just going to leave everything default, which means, according to the documentation, port 9000
+         on localhost is where the service will be, and imaginary also exposes a form at http://localhost:9000/form if you want to start
+         messing around with what imaginary can do, so that's what we'll start with.  Later on, we'll build our own form in Spring Boot
+         to post REST calls to imaginary's service so that we can get the results that way.  To start the container:
+      </p>
+        <code>
+          docker run -p 9000:9000 h2non/imaginary
+        </code>
+
+      <p>If you don't add the <code>-p 9000:9000</code>, the port in the container will be open to listening, but your OS will not Open
+         port 9000 to send traffic to the listening port on the container. Running the <code>docker run</code> command will leave an open
+         process in your terminal - just keep it like that for now, then open up a browser and head to <a href="http://localhost:9000/form">http://localhost:9000/form</a>.
+         The form should appear and look like this:</p>
+
+      <img src="images/default_form.png" alt="Default imaginary form for testing services">
+      
+  </body>
+</html>
