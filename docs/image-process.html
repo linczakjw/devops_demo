@@ -31,7 +31,7 @@ layout: default
          to post REST calls to imaginary's service so that we can get the results that way.  To start the container:
       </p>
         <code>
-          docker run -p 9000:9000 h2non/imaginary
+          docker run --rm -p 9000:9000 h2non/imaginary
         </code>
 
       <p>If you don't add the <code>-p 9000:9000</code>, the port in the container will be open to listening, but your OS will not open
@@ -72,7 +72,7 @@ layout: default
            in my devops_demo project folder called <code>uploads</code> and then mount the volume on the imaginary container like this:
         </p>
 
-        <code>docker run -v ~/dev/devops_demo/uploads:/mnt/uploads -p 9000:9000 h2non/imaginary -mount /mnt/uploads</code>
+        <code>docker run --rm -v ~/dev/devops_demo/uploads:/mnt/uploads -p 9000:9000 h2non/imaginary -mount /mnt/uploads</code>
 
         <p>I'm not going to go into crazy detail here, but you can always run an exec on the container now, go to <code>/mnt/uploads</code>,
            then in your OS in a separate terminal copy a GIF of JPEG file into your directory (in my case it's in ~/dev/devops_demo/uploads)
