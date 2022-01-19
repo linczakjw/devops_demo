@@ -6,11 +6,11 @@
 	</div>
 
 	<div>
-		<form method="POST" enctype="multipart/form-data" action="/">
+		<form method="POST" enctype="multipart/form-data" action="http://localhost:9000/convert?type=png">
       <!-- are we still doing tables to lay out forms?  Is that still a thing? -->
       <table>
 				<tr>
-          <td>File to upload:</td>
+          <td>File to convert:</td>
           <td><input type="file" name="file" /></td>
         </tr>
 				<tr>
@@ -19,14 +19,6 @@
         </tr>
 			</table>
 		</form>
-	</div>
-
-	<div>
-		<ul>
-			<li th:each="file : ${files}">
-				<a th:href="${file}" th:text="${file}" />
-			</li>
-		</ul>
 	</div>
 
 </body>

@@ -23,6 +23,23 @@ layout: default
         developed in the past I've used either LAMP or .NET stacks.  So let's challenge ourselves, no?
       </p>
 
+      <h2>Changing the Imaginary Container approach</h2>
+        <p>In the <a href="image-process.html">previous step</a>, we started the container and mounted a local host directory just so that we could
+           transfer a file to the container's file system so that we can call an API method to convert the file that's there.  That's fine, but in
+           this setup, we just want to POST the file we want to send and then have imaginary send the results back to us as a binary file to
+           capture and display to the user in their browser window.  We don't need to change anything about the container short of how we start
+           it in the future, without mounting anything:</p>
+
+        <code>docker run --rm -p 9000:9000 h2non/imaginary</code>
+
+        <p>And then to test a POST API call, you can use curl to simulate this again, like so:</p>
+
+        <code>curl --output ~/Desktop/convert.png -F file=@0.jpeg http://localhost:9000/convert?type=png</code>
+
+        <p>For curl, we'll want to output to a file rather than the terminal, but in the web application we'll build, it will come right back
+           to us to output to the browser.
+        </p>
+
       <h2>Building the Upload Application</h2>
         <p>Let's start with initializing a project.  I'll do it on Spring's Initializer website, but I can do this in VS code as well. Head to
           <a href="https://start.spring.io">https://start.spring.io</a> and fill out the necessary details.  I'll be using Maven. I'm calling
