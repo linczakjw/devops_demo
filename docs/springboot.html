@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Spring Boot application front-end setup</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+
+    <h1>Spring Boot application front-end setup</h1>
+      <p>OK, so we've setup the basic image processing container and services, so now it's time to write our own front-end to upload the file
+        you want to convert into the browser and send it to the service so that it can be converted to a PNG and deliver it back to the user in
+        their browser.
+      </p>
+
+      <p>To do this, the plan of attack is to create a Spring Boot application for uploading files, containerize it, then allow the two
+        containers (the imaginary image service container) and the Spring Boot container to talk to each other.  Now, I'm not a Spring Boot
+        developer, and there are examples of how to setup Spring Boot on Spring's website, so I'm not going to regurgitate that here.  Why
+        Spring Boot?  Truth be told - I'm not a fan of Java, but it's a challenge for me to do something different, especially when I have
+        developed in the past I've used either LAMP or .NET stacks.  So let's challenge ourselves, no?
+      </p>
+
+      <h2>Building the Upload Application</h2>
+        <p>Let's start with initializing a project.  I'll do it on Spring's Initializer website, but I can do this in VS code as well. Head to
+          <a href="https://start.spring.io">https://start.spring.io</a> and fill out the necessary details.  I'll be using Maven. I'm calling
+          my group com.devopsdemo with a demo as the name and artifact.  I'm going to use Java 11 and package things as a <code>.jar</code> file.
+          The rest I will leave as default. I will add the following dependencies:</p>
+          
+        <ul>
+          <li>Spring Web - this allows us to setup and call RESTful services</li>
+          <li>Thymeleaf - a templating engine for making HTML pages</li>
+        </ul>
+          
+        <p>Once I hit Generate, then I'll grab the demo.zip file and unpack it in my ~/dev/devops_demo/folder.
+        </p>
